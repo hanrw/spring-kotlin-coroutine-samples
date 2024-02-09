@@ -119,11 +119,12 @@ class BlockingUserController(
         logger.info("Start store user")
 
         // this case use Dispatchers.VT as coroutine dispatcher. and the thread context, mdc will be lost
-        // which means that the transactional context will be lost as well
+        // which means that the transactional context will be lost as well.
+        // if you want to use mdc, you can use MDCContext, TransactionalContext
         return runBlocking(Dispatchers.VT + MDCContext()) {
             // here will park the couroutine thread. mounting the thread to heap
             // avatarUrl and emailVerified will be executed in the same thread
-            // total time will be avatarUrl + emailVerified >= 400ms
+            // total time will be avatarUrl + emailVerified >= 200ms
             val avatarUrl = async {
                 user.avatarUrl ?: blockingAvatarService.randomAvatar(delay).url.also {
                     logger.info("fetch random avatar...")
