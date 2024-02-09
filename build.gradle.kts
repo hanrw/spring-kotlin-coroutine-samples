@@ -35,6 +35,7 @@ dependencies {
     implementation(libs.io.projectreactor.kotlin.reactor.kotlin.extensions)
     implementation(libs.org.jetbrains.kotlin.kotlin.reflect)
     implementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.reactor)
+    implementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.core)
 
     implementation(libs.io.r2dbc.r2dbc.h2)
     implementation(libs.io.r2dbc.r2dbc.spi)

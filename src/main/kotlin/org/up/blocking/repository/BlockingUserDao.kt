@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate
+import org.up.blocking.model.AvatarDto
 import org.up.blocking.model.UserJpa
-import org.up.coroutines.model.AvatarDto
 
 @Repository
 interface BlockingUserDao : JpaRepository<UserJpa, Long>

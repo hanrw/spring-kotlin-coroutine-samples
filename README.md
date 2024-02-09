@@ -72,3 +72,30 @@ gob  -c 100 -n 500 -k http://localhost:8080/blocking/users/3/sync-avatar
 
 https://stackoverflow.com/questions/35628764/completablefuture-vs-spring-transactions
 
+
+# spring boot with coroutines combined with virtual threads
+## The wrong way revisited
+- Blocking IO - Spring mvc
+  - BlockingUserController
+  - case 1: virtual threads + coroutines
+```shell
+echo -n '{"id":null,"userName":"JackRabbit","email":"Jack@Rabbit.com","avatarUrl":null}' | http POST http://localhost:8080/neverDoThisWay/blocking/1/users\?delay\=200 --meta
+
+Elapsed time: 0.436676875s
+
+## da85b1b651 same thread
+
+14:07:39.270 [tomcat-handler-12] da85b1b651 INFO  o.u.b.c.BlockingUserController - Start store user
+14:07:39.475 [tomcat-handler-12] da85b1b651 INFO  o.u.b.c.BlockingUserController - fetch random avatar...
+14:07:39.683 [tomcat-handler-12] da85b1b651 INFO  o.u.b.c.BlockingUserController - verify email Jack@Rabbit.com...
+```
+
+
+- case 2: virtual threads + coroutines with specific dispatcher(VirtualThreadDispatcher) - it's will lose the thread local context. e.g MDC, SecurityContextHolder, Transactional etc.
+```shell
+echo -n '{"id":null,"userName":"JackRabbit","email":"Jack@Rabbit.com","avatarUrl":null}' | http POST http://localhost:8080/neverDoThisWay/2/blocking/users\?delay\=200 --meta
+Elapsed time: 0.225320292s
+```
+
+- case 3: virtual threads + coroutines with specific dispatcher(VirtualThreadDispatcher)
+It's can not work as expected, but need add the context like: + MDCContext + TransactionalContext and so on.
